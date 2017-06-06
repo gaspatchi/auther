@@ -12,7 +12,7 @@ let server = express();
 server.use(bodyparser.json());
 server.use(errorHandler);
 
-server.post("/token/create", JsonValidate("token_create"), async (req, res) => {
+server.post("/create", JsonValidate("token_create"), async (req, res) => {
 	try {
 		let time_start = process.hrtime();
 		let token = jwt.sign({ type: req.body.type, firstname: req.body.firstname, lastname: req.body.lastname }, config.server.salt, { subject: req.body.email, expiresIn: "14d" });
@@ -25,11 +25,11 @@ server.post("/token/create", JsonValidate("token_create"), async (req, res) => {
 			throw new Error();
 		}
 	} catch (error) {
-		res.status(400).json({ message: "Невозможно создать токен" });
+		res.status(500).json({ message: "Невозможно создать токен" });
 	}
 });
 
-server.post("/token/verify", JsonValidate("token_verify"), async (req, res) => {
+server.post("/verify", JsonValidate("token_verify"), async (req, res) => {
 	try {
 		let time_start = process.hrtime();
 		let info = jwt.verify(req.body.token, config.server.salt);
@@ -49,7 +49,7 @@ server.post("/token/verify", JsonValidate("token_verify"), async (req, res) => {
 		} else if (error.name === "JsonWebTokenError") {
 			res.status(400).json({ message: "Токен недействителен" });
 		} else {
-			res.status(400).json({ message: "Невозможно проверить токен" });
+			res.status(500).json({ message: "Невозможно проверить токен" });
 		}
 	}
 });
@@ -61,6 +61,11 @@ server.get("/metrics", (req, res) => {
 
 server.listen(config.server.port, config.server.address, async () => {
 	await init();
+});
+
+process.on("SIGTERM", async () => {
+	await consul.deregisterService("tokenzer");
+	await process.exit();
 });
 
 process.on("SIGINT", async () => {

@@ -1,7 +1,7 @@
 let config = {
 	server: {
+		address: "0.0.0.0",
 		port: 8085,
-		address: "127.0.0.1",
 		salt: ""
 	},
 	consul: {
@@ -11,7 +11,7 @@ let config = {
 	vault: {
 		apiVersion: "v1",
 		endpoint: "",
-		token: "f37dbc21-f239-d422-7785-f52bca6db1e7"
+		token: "acbbfcb5-a4b7-1719-e4ee-b196ae7ac6e3"
 	},
 	tarantool: {
 		address: "",

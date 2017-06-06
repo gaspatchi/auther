@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon --exec babel-node -- index.js",
-    "build": "",
+    "build": "babel-node index.js",
     "test": "mocha --compilers js:babel-core/register --require babel-polyfill || true"
   },
   "repository": {
@@ -33,7 +33,6 @@
     "axios": "^0.16.1",
     "body-parser": "^1.17.2",
     "express": "^4.15.3",
-    "install": "^0.10.1",
     "jsonwebtoken": "^7.4.1",
     "node-vault": "^0.5.6",
     "npm": "^5.0.2",

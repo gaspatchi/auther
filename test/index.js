@@ -8,7 +8,7 @@ let token = "";
 
 describe("Создание JWT токена", () => {
 	beforeEach((done) => {
-		setTimeout(()=>{
+		setTimeout(() => {
 			done();
 		}, 250);
 	});
@@ -20,18 +20,18 @@ describe("Создание JWT токена", () => {
 			lastname: "Бережной",
 			email: "nik.pr2012@yandex.ru"
 		};
-		
+
 		chai.request(server)
-				.post("/token/create")
-				.send(profile)
-				.end((err, res) => {
-					token = res.body.token;
-					chai.expect(err).to.be.null;
-					chai.expect(res).to.be.json;
-					chai.expect(res.status).to.be.equal(200);
-					chai.expect(res.body).to.be.have.keys("token");
-					done();
-				});
+			.post("/create")
+			.send(profile)
+			.end((err, res) => {
+				token = res.body.token;
+				chai.expect(err).to.be.null;
+				chai.expect(res).to.be.json;
+				chai.expect(res.status).to.be.equal(200);
+				chai.expect(res.body).to.be.have.keys("token");
+				done();
+			});
 	});
 
 	it("Должен вернуть ошибку при неполном запросе", (done) => {
@@ -40,49 +40,49 @@ describe("Создание JWT токена", () => {
 			firstname: "Никита",
 			lastname: "Бережной",
 		};
-		
+
 		chai.request(server)
-				.post("/token/create")
-				.send(profile)
-				.end((err, res) => {
-					chai.expect(err).to.be.not.null;
-					chai.expect(res).to.be.json;
-					chai.expect(res.status).to.be.equal(400);
-					done();
-				});
+			.post("/create")
+			.send(profile)
+			.end((err, res) => {
+				chai.expect(err).to.be.not.null;
+				chai.expect(res).to.be.json;
+				chai.expect(res.status).to.be.equal(400);
+				done();
+			});
 	});
 });
 
 describe("Проверка JWT токена", () => {
 	beforeEach((done) => {
-		setTimeout(()=>{
+		setTimeout(() => {
 			done();
 		}, 250);
 	});
 
 	it("Должен вернуть инфо о юзере", (done) => {
 		chai.request(server)
-				.post("/token/verify")
-				.send({token})
-				.end((err, res) => {
-					chai.expect(err).to.be.null;
-					chai.expect(res).to.be.json;
-					chai.expect(res.status).to.be.equal(200);
-					chai.expect(res.body).to.be.have.keys(["type","firstname","lastname","iat","exp","sub"]);
-					done();
-				});
+			.post("/verify")
+			.send({ token })
+			.end((err, res) => {
+				chai.expect(err).to.be.null;
+				chai.expect(res).to.be.json;
+				chai.expect(res.status).to.be.equal(200);
+				chai.expect(res.body).to.be.have.keys(["type", "firstname", "lastname", "iat", "exp", "sub"]);
+				done();
+			});
 	});
 
-		it("Должен вернуть ошибку при невалидном токене", (done) => {
+	it("Должен вернуть ошибку при невалидном токене", (done) => {
 		chai.request(server)
-				.post("/token/verify")
-				.send({token: "test"})
-				.end((err, res) => {
-					chai.expect(err).to.be.not.null;
-					chai.expect(res).to.be.json;
-					chai.expect(res.status).to.be.equal(400);
-					chai.expect(res.body).to.be.have.key("message");
-					done();
-				});
+			.post("/verify")
+			.send({ token: "test" })
+			.end((err, res) => {
+				chai.expect(err).to.be.not.null;
+				chai.expect(res).to.be.json;
+				chai.expect(res.status).to.be.equal(400);
+				chai.expect(res.body).to.be.have.key("message");
+				done();
+			});
 	});
 });
