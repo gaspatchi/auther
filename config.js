@@ -1,23 +1,19 @@
 let config = {
 	server: {
-		address: "0.0.0.0",
+		name: "tokenzer",
+		address: "127.0.0.1",
 		port: 8085,
-		salt: ""
+		salt: process.env.password_salt
 	},
 	consul: {
 		address: "127.0.0.1",
 		port: 8500
 	},
-	vault: {
-		apiVersion: "v1",
-		endpoint: "",
-		token: "acbbfcb5-a4b7-1719-e4ee-b196ae7ac6e3"
-	},
 	tarantool: {
 		address: "",
 		port: "",
-		user: "",
-		password: "",
+		user: process.env.tarantool_user,
+		password: process.env.tarantool_password,
 		timeout: 3000,
 		log: false
 	},

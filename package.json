@@ -1,6 +1,6 @@
 {
   "name": "tokenzer",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Creating and verifying tokens",
   "main": "index.js",
   "scripts": {
@@ -32,9 +32,9 @@
     "ajv-i18n": "^2.0.2",
     "axios": "^0.16.1",
     "body-parser": "^1.17.2",
+    "consul": "^0.29.0",
     "express": "^4.15.3",
     "jsonwebtoken": "^7.4.1",
-    "node-vault": "^0.5.6",
     "npm": "^5.0.2",
     "prom-client": "^9.0.0",
     "tarantool-driver": "^2.0.1"

@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 import { registry, created_tokens, checked_tokens, token_create_time, token_verify_time } from "./lib/prometheus";
 import config from "./config";
 import init from "./lib/init";
-import consul from "./lib/consul";
+import Consul from "consul";
 import tarantool from "./lib/tarantool";
 
 let server = express();
@@ -25,6 +25,7 @@ server.post("/create", JsonValidate("token_create"), async (req, res) => {
 			throw new Error();
 		}
 	} catch (error) {
+		console.log({ type: "Error", module: "createToken", message: error.message, date: new Date().toJSON() });
 		res.status(500).json({ message: "Невозможно создать токен" });
 	}
 });
@@ -44,6 +45,7 @@ server.post("/verify", JsonValidate("token_verify"), async (req, res) => {
 			throw error;
 		}
 	} catch (error) {
+		console.log({ type: "Error", module: "verifyToken", message: error.message, date: new Date().toJSON() });
 		if (error.name === "TokenExpiredError") {
 			res.status(400).json({ message: "Токен истек" });
 		} else if (error.name === "JsonWebTokenError") {
@@ -60,17 +62,21 @@ server.get("/metrics", (req, res) => {
 });
 
 server.listen(config.server.port, config.server.address, async () => {
-	await init();
+	init();
 });
 
-process.on("SIGTERM", async () => {
-	await consul.deregisterService("tokenzer");
-	await process.exit();
+process.on("SIGTERM", () => {
+	let consul = Consul();
+	consul.agent.service.deregister(config.server.name, () => {
+		process.exit();
+	});
 });
 
-process.on("SIGINT", async () => {
-	await consul.deregisterService("tokenzer");
-	await process.exit();
+process.on("SIGINT", () => {
+	let consul = Consul();
+	consul.agent.service.deregister(config.server.name, () => {
+		process.exit();
+	});
 });
 
 export default server;
